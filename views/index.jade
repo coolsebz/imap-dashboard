@@ -1,5 +1,13 @@
 extends layout
 
 block content
-  h1= title
-  p Welcome to #{title}
+  h1 Welcome!
+  if user
+	  p.
+	  	user.name
+
+	  div
+
+  else
+  	p.
+  		Please setup your details.json file in this directory in order to access the application
