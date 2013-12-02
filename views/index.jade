@@ -3,9 +3,14 @@ extends layout
 block content
   h1 Welcome!
   if user
-    p.
-      user.name
-    div	
+    p= user.name
+    div.folders
+      each folder in user.folders
+        li= folder
+    table.emails
+      each email in user.emails
+        td= email
+
 
   else
     p.
