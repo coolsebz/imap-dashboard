@@ -5,9 +5,9 @@
   "main": "index.js",
   "dependencies": {
     "express": "~3.4.6",
-    "imap": "~0.8.7"
+    "imap": "~0.8.7",
+    "twitter-bootstrap-3.0.0": "~3.0.0"
   },
-  "devDependencies": {},
   "scripts": {
     "test": "--test"
   },
