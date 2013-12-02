@@ -1,26 +1,12 @@
 {
-  "name": "imap-dashboard",
-  "version": "0.0.0",
-  "description": "Small dashboard for IMAP based email",
-  "main": "index.js",
-  "dependencies": {
-    "express": "~3.4.6",
-    "imap": "~0.8.7",
-    "twitter-bootstrap-3.0.0": "~3.0.0"
-  },
+  "name": "application-name",
+  "version": "0.0.1",
+  "private": true,
   "scripts": {
-    "test": "--test"
+    "start": "node app.js"
   },
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/coolsebz/imap-dashboard.git"
-  },
-  "keywords": [
-    "dashboard"
-  ],
-  "author": "Trif Marius Sebastian",
-  "license": "BSD-2-Clause",
-  "bugs": {
-    "url": "https://github.com/coolsebz/imap-dashboard/issues"
+  "dependencies": {
+    "express": "3.4.6",
+    "jade": "*"
   }
 }
