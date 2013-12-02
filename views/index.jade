@@ -7,11 +7,17 @@ block content
     div.folders
       each folder in user.folders
         li= folder
-    table.emails
-      each email in user.emails
-        td= email
-
-
+  
+    div.emails
+      table.table.table-striped
+        thead
+          tr: th Emails
+        tbody
+          each email in user.emails
+            tr
+              td 
+                //a(href='/emails/' + email.id) #{email.author} - #{email.title}
+                a(href='#') email
   else
     p.
       Please setup your details.json file in this directory in order to access the application
