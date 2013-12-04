@@ -6,7 +6,7 @@ function getUser(callback) {
 }
 
 function readConfig(callback) {
-	fs.readFile('../details.json', 'utf8', function(err, data) {
+	fs.readFile(__dirname + '/../details.json', 'utf8', function(err, data) {
 		if(err) {
 			return console.log(err);
 		}
