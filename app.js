@@ -9,7 +9,6 @@ var user = require('./routes/user');
 var http = require('http');
 var path = require('path');
 var imapMail = require('./mail/mail-reader');
-var imapDetails = require('./util/config-provider');
 
 var app = express();
 
@@ -37,10 +36,6 @@ app.get('/users', user.list);
 
 //todo: api functionality
 //app.get('/mails', imapMail.emails);
-
-imapDetails.getUser(function (User) {
-	console.log("Opening dashboard for user: " + User.user);
-});
 
 http.createServer(app).listen(app.get('port'), function(){
   console.log('Express server listening on port ' + app.get('port'));

@@ -8,9 +8,12 @@ function getUser(callback) {
 function readConfig(callback) {
 	fs.readFile(__dirname + '/../details.json', 'utf8', function(err, data) {
 		if(err) {
-			return console.log(err);
+			console.log(err);
+			callback(undefined)
 		}
-		callback(parseConfig(data));
+		else {
+			callback(parseConfig(data));	
+		}
 	});
 }
 
