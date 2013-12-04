@@ -9,6 +9,40 @@ function openInbox(cb) {
 	imap.openBox("INBOX", true, cb);
 }
 
+//this method should return an array of strings
+//each string represents a 'folder' name
+function getFolders() {
+	
+}
+
+//this method should return an array of strings
+//each string represents the title of an email 
+function getEmailTitles(boxName) {
+
+}
+
+//this method should get the mails from the server
+//serves as a caching method on the server
+//todo: if found problematic please use a new call for every read
+function getEmails(boxName) {
+
+}
+
+//this method should return the text of a specific email
+function getEmailBody(emailId) {
+
+}
+
+//this method should return the subject of a specific email
+function getEmailSubject(emailId) {
+	
+}
+
+//this method should return the date of a specific email
+function getEmailDate(emailId) {
+
+}
+
 imap.once('ready', function() {
   openInbox(function(err, box) {
     if (err) throw err;
@@ -52,5 +86,3 @@ imap.once('error', function(err) {
 imap.once('end', function() {
 	console.log('Connection ended');
 });
-
-imap.connect();
