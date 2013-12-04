@@ -4,12 +4,19 @@ block content
   h1 Welcome!
   if user
     p= user.name
-    div.folders
-      each folder in user.folders
-        li= folder
-  
-    div.emails
-      table.table.table-striped
+    hr
+    div.folders.block
+      table.table.table-bordered
+        thead
+          tr: th Folders
+        tbody
+          each folder in user.folders
+            tr
+              td 
+                //a(href='/emails/' + email.id) #{email.author} - #{email.title}
+                a(href='#') folder
+    div.emails.block
+      table.table.table-bordered
         thead
           tr: th Emails
         tbody

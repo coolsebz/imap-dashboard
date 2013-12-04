@@ -7,14 +7,23 @@ a {
   color: #00B7FF;
 }
 
-.emails {
-	width: 60%;
-	float: right;
+.block {
+	float: left;
 	display: block;
 }
 
-.folder {
-	width: 40px;
-	float: left;
-	display: block;
+.emails {
+	width: 60%;
+}
+
+.emails table {
+	margin-left: 10px;
+}
+
+.folders {
+	width: 40%;
+}
+
+.folders table {
+	margin-right: 10px;
 }
