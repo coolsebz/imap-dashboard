@@ -12,3 +12,9 @@ a {
 	float: right;
 	display: block;
 }
+
+.folder {
+	width: 40px;
+	float: left;
+	display: block;
+}
