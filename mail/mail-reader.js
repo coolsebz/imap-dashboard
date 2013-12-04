@@ -1,18 +1,55 @@
-var Imap = require('imap'),
-	inspect = require('util').inspect;
+var Imap = require('imap');
+var inspect = require('util').inspect;
+var imap;
 
-var imap = new Imap({
-	//account details here
-});
+var ready = false;
+var folders = [];
 
-function openInbox(cb) {
-	imap.openBox("INBOX", true, cb);
+function setupClient(User, callback) {
+    imap = new Imap({
+        user: User.user,
+        password: User.password,
+        host: User.host,
+        port: User.port,
+        tls: User.tls,
+        tlsOptions: User.tlsOptions
+    });
+
+    //setting up events
+    imap.once('ready', function() {
+        ready = true;
+        callback();
+    });
+
+    imap.once('error', function(err) {
+        console.log(err);
+        ready = false;
+    });
+
+    imap.once('end', function() {
+        console.log('Connection ended');
+        ready = false;
+    });
+
+    imap.connect();
 }
 
 //this method should return an array of strings
 //each string represents a 'folder' name
-function getFolders() {
-	
+function getFolders(callback) {
+    if(ready) {
+        imap.getBoxes("", function(err, data) {
+            if(err) {
+                console.log(err);
+            }
+            else {
+                for(var box in data) {
+                    folders.push(box.toString());
+                    callback(folders);
+                }
+            } 
+        });
+    }
 }
 
 //this method should return an array of strings
@@ -35,7 +72,7 @@ function getEmailBody(emailId) {
 
 //this method should return the subject of a specific email
 function getEmailSubject(emailId) {
-	
+    
 }
 
 //this method should return the date of a specific email
@@ -43,46 +80,12 @@ function getEmailDate(emailId) {
 
 }
 
-imap.once('ready', function() {
-  openInbox(function(err, box) {
-    if (err) throw err;
-    var f = imap.seq.fetch('1:3', {
-      bodies: 'HEADER.FIELDS (FROM TO SUBJECT DATE)',
-      struct: true
-    });
-    f.on('message', function(msg, seqno) {
-      console.log('Message #%d', seqno);
-      var prefix = '(#' + seqno + ') ';
-      msg.on('body', function(stream, info) {
-        var buffer = '';
-        stream.on('data', function(chunk) {
-          buffer += chunk.toString('utf8');
-        });
-        stream.once('end', function() {
-          console.log(prefix + 'Parsed header: %s', inspect(Imap.parseHeader(buffer)));
-        });
-      });
-      msg.once('attributes', function(attrs) {
-        console.log(prefix + 'Attributes: %s', inspect(attrs, false, 8));
-      });
-      msg.once('end', function() {
-        console.log(prefix + 'Finished');
-      });
-    });
-    f.once('error', function(err) {
-      console.log('Fetch error: ' + err);
-    });
-    f.once('end', function() {
-      console.log('Done fetching all messages!');
-      imap.end();
-    });
-  });
-});
 
-imap.once('error', function(err) {
-	console.log(err);
-});
 
-imap.once('end', function() {
-	console.log('Connection ended');
-});
+//only showing some of the methods
+//encapsulation ftw!
+exports.setup = setupClient;
+exports.getFolders = getFolders;
+exports.getEmailBody = getEmailBody;
+exports.getEmailDate = getEmailDate;
+exports.getEmailSubject = getEmailSubject;

@@ -21,10 +21,10 @@ block content
           tr: th Emails
         tbody
           each email in user.emails
-            tr
+            tr            
               td 
                 //a(href='/emails/' + email.id) #{email.author} - #{email.title}
-                a(href='#') email
+                a(href='/email/' + email.id) email
   else
     p.
       Please setup your details.json file in this directory in order to access the application
