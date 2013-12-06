@@ -3,7 +3,7 @@ var inspect = require('util').inspect;
 var imap;
 
 var ready = false;
-var folders = [];
+var folders;
 
 function setupClient(User, callback) {
     imap = new Imap({
@@ -37,7 +37,8 @@ function setupClient(User, callback) {
 //this method should return an array of strings
 //each string represents a 'folder' name
 function getFolders(callback) {
-    if(ready) {
+    if(ready && folders === undefined) {
+        folders = [];
         imap.getBoxes("", function(err, data) {
             if(err) {
                 console.log(err);
@@ -45,8 +46,8 @@ function getFolders(callback) {
             else {
                 for(var box in data) {
                     folders.push(box.toString());
-                    callback(folders);
                 }
+                callback(folders);
             } 
         });
     }

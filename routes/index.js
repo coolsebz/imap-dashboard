@@ -4,7 +4,8 @@ var mail = require('./../mail/mail-reader');
 /*
  * GET home page.
  */
-exports.index = function(req, res){
+exports.index = function(req, res) {
+
 	config.getUser(function(User) {
 
 		if(User) {
@@ -17,24 +18,24 @@ exports.index = function(req, res){
 				//at this moment we know that we are connected, so we get the folders
 				mail.getFolders(function (folders) {
 					displayedData.folders = folders;
-				});
-
- 
-
-				//safe for rendering
-				res.render('index', {
-					user: {
-						name: displayedData.name,
-						folders: displayedData.folders,
-						emails: ["email1", "email2", "email3"]
-					}
+					//safe for rendering
+					render(res, {
+						user: {
+							name: displayedData.name,
+							folders: displayedData.folders,
+							emails: ["email1", "email2", "email3"]
+						}
+					});
 				});
 			});
-			
-		  	
 	  	}
 	  	else {
-	  		res.render('index');
+	  		render(res);
 	  	}
   	});
 };
+
+
+function render(res, data) {
+	res.render('index', data)
+}

@@ -31,11 +31,10 @@ if ('development' == app.get('env')) {
   app.use(express.errorHandler());
 }
 
+//should make the index render the default INBOX folder
 app.get('/', routes.index);
-app.get('/users', user.list);
-
-//todo: api functionality
-//app.get('/mails', imapMail.emails);
+app.get('/folder/:folder_id', routes.folder);
+app.get('/email/:email_id', routes.email);
 
 http.createServer(app).listen(app.get('port'), function(){
   console.log('Express server listening on port ' + app.get('port'));
