@@ -79,20 +79,26 @@ function getEmails(folderName, callback) {
             struct: true
         }); 
 
+        if(typeof emails === 'undefined')
+            emails = [];
+
         emails.on('message', function(message, id_sequence) {
-            console.log(" --> Message #" + id_sequence);
-            var prefix = '     ';
+            //console.log(" --> Message #" + id_sequence);
+            //var prefix = '     ';
+
+
 
             message.on('body', function(stream, info) {
-              if (info.which === 'TEXT')
-                console.log(prefix + 'Body [%s] found, %d total bytes', inspect(info.which), info.size);
-              var buffer = '', count = 0;
-              stream.on('data', function(chunk) {
-                count += chunk.length;
-                buffer += chunk.toString('utf8');
                 if (info.which === 'TEXT')
-                  console.log(prefix + 'Body [%s] (%d/%d)', inspect(info.which), count, info.size);
-              });
+                //console.log(prefix + 'Body [%s] found, %d total bytes', inspect(info.which), info.size);
+                var buffer = '', count = 0;
+                stream.on('data', function(chunk) {
+                    count += chunk.length;
+                    buffer += chunk.toString('utf8');
+                if (info.which === 'TEXT')
+                    console.log(prefix + 'Body [%s] (%d/%d)', inspect(info.which), count, info.size);
+            });
+
               stream.once('end', function() {
                 if (info.which !== 'TEXT')
                   console.log(prefix + 'Parsed header: %s', inspect(Imap.parseHeader(buffer)));
