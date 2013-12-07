@@ -121,23 +121,24 @@ function getEmails(folderName, callback) {
 
 //this method should return the text of a specific email
 function getEmailBody(emailId) {
-
+    //at this point all details about the email have been fetched
+    return emails[emailId].body;
 }
 
 //this method should return the subject of a specific email
 function getEmailSubject(emailId) {
-    
+    return emails[emailId].subject;
 }
 
 //this method should return the date of a specific email
 function getEmailDate(emailId) {
-
+    return emails[emailId].date;
 }
 
 //private functions
 function openFolder(folderName, callback) {
     if(imap) {
-
+        //calling the imap extension method
         imap.openBox(folderName, true, function(err, folder) {
             if(err) console.log(err);
             else {
