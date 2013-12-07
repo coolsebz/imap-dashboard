@@ -5,7 +5,6 @@
 
 var express = require('express');
 var routes = require('./routes');
-var user = require('./routes/user');
 var http = require('http');
 var path = require('path');
 var imapMail = require('./mail/mail-reader');
@@ -33,8 +32,8 @@ if ('development' == app.get('env')) {
 
 //should make the index render the default INBOX folder
 app.get('/', routes.index);
-app.get('/folder/:folder_id', routes.folder);
-app.get('/email/:email_id', routes.email);
+//app.get('/folder/:folder_id', routes.folder);
+//app.get('/email/:email_id', routes.email);
 
 http.createServer(app).listen(app.get('port'), function(){
   console.log('Express server listening on port ' + app.get('port'));
