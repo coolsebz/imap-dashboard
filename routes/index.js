@@ -17,17 +17,22 @@ exports.index = function(req, res) {
 			mail.setup(User, function() {
 				//at this moment we know that we are connected, so we get the folders
 				mail.getFolders(function (folders) {
-					mail.getEmails('INBOX');
-
 					displayedData.folders = folders;
-					//safe for rendering
-					render(res, {
-						user: {
-							name: displayedData.name,
-							folders: displayedData.folders,
-							emails: ["email1", "email2", "email3"]
-						}
+
+					mail.getEmails('INBOX', function(emailList) {
+						//safe for rendering
+						render(res, {
+							user: {
+								name: displayedData.name,
+								folders: displayedData.folders,
+								emails: emailList
+							}
+						});
 					});
+
+					
+					
+					
 				});
 			});
 	  	}

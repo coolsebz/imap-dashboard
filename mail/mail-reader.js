@@ -73,8 +73,12 @@ function getEmailTitles(boxName) {
 //serves as a caching method on the server
 //todo: if found problematic please use a new call for every read
 function getEmails(folderName, callback) {
+
+    //just making sure we don't get the emails added to the already present email list
+    emailsInFolder = [];
+
     openFolder(folderName, function(folder) {
-        var emails = imap.seq.fetch('1:3', {
+        var emails = imap.seq.fetch('*:100', {
             bodies: ['HEADER.FIELDS (FROM TO SUBJECT DATE)', 'TEXT'],
             struct: true
         }); 
@@ -82,7 +86,9 @@ function getEmails(folderName, callback) {
 
         emails.on('message', function(message, id_sequence) {
             
+            //this is the email template
             var readEmail = {
+                id: 0,
                 from: "",
                 to: "",
                 date: "",
@@ -99,40 +105,39 @@ function getEmails(folderName, callback) {
                 stream.on('data', function(chunk) {
                     count += chunk.length;
                     buffer += chunk.toString('utf8');
-                
+                });
+                stream.once('end', function() {
+                    if (info.which !== 'TEXT') {
+                        var parsedHeader = Imap.parseHeader(buffer);
+
+                        readEmail.id = id_sequence;
+                        readEmail.from = parsedHeader.from[0];
+                        readEmail.to = parsedHeader.to[0];
+                        readEmail.date = parsedHeader.undefineddate[0];
+                        readEmail.subject = parsedHeader.subject[0];
+                        readEmail.hasHeaderReady = true;
+                    }
+
+                    else {
+                      readEmail.body = buffer;
+                      readEmail.hasBodyReady = true;
+                    }
+
+                    if(readEmail.hasBodyReady === true && readEmail.hasHeaderReady === true) {
+                        emailsInFolder.push(readEmail);
+                    }
+                });
             });
 
-              stream.once('end', function() {
-
-
-                if (info.which !== 'TEXT') {
-                    var parsedHeader = Imap.parseHeader(buffer);
-                    console.log(prefix + 'Parsed header: %s', inspect(Imap.parseHeader(buffer)));
-                    readEmail.from = parsedHeader.from[0];
-                    readEmail.to = parsedHeader.to[0];
-                    readEmail.date = parsedHeader.undefineddate[0];
-                    readEmail.subject = parsedHeader.subject[0];
-                    readEmail.hasHeaderReady = true;
-                }
-
-                else {
-                  readEmail.body = buffer;
-                  readEmail.hasBodyReady = true;
-                }
-
-                if(readEmail.hasBodyReady && readEmail.hasHeaderReady)
-                    emailsInFolder.push(readEmail);
-              });
-            });
             message.once('attributes', function(attrs) {
-              console.log(prefix + 'Attributes: %s', inspect(attrs, false, 8));
+                //console.log('Attributes: %s', inspect(attrs, false, 8));
             });
             message.once('end', function() {
-              //console.log(prefix + 'Finished');
+                //console.log('Finished');
+                callback(emailsInFolder);
             });
-          });
-        }); 
-    // });
+        });
+    });
 }
 
 //this method should return the text of a specific email

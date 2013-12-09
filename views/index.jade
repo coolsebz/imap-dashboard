@@ -25,12 +25,10 @@ block content
           each email in user.emails
             tr            
               td 
-                //a(href='/emails/' + email.id) #{email.author} - #{email.title}
+                //a(href='/emails/' + email.id) #{email.from} - #{email.title}
                 a(href='/email/' + email.id) #{email.subject}
-              td
-                #{email.from}
-              td
-                #{email.date}
+              td= email.from
+              td= email.date
   else
     p.
       Please setup your details.json file in this directory in order to access the application
