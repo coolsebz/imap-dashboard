@@ -5,6 +5,7 @@ var imap;
 var ready = false;
 var folders;
 var emailsInFolder = [];
+var messageCount = 30;
 
 function setupClient(User, callback) {
 
@@ -78,7 +79,7 @@ function getEmails(folderName, callback) {
     emailsInFolder = [];
 
     openFolder(folderName, function(folder) {
-        var emails = imap.seq.fetch('1:50', {
+        var emails = imap.seq.fetch('1:'+messageCount.toString(), {
             bodies: ['HEADER.FIELDS (FROM TO SUBJECT DATE)', 'TEXT'],
             struct: true
         }); 
@@ -134,15 +135,14 @@ function getEmails(folderName, callback) {
                 //console.log('Attributes: %s', inspect(attrs, false, 8));
             });
             message.once('end', function() {
-                //console.log('Finished');
-                
+                if(emailsInFolder.length === messageCount)
+                    callback(emailsInFolder);
+                else {
+                    console.log(emailsInFolder.length);
+                }
             });
         });
-        
-        emails.on('end', function() {
-            console.log("DONE");
-            callback(emailsInFolder);
-        });
+
     });
 }
 
