@@ -4,7 +4,7 @@ var imap;
 
 var ready = false;
 var folders;
-var emails;
+var emails = [];
 
 function setupClient(User, callback) {
 
@@ -84,7 +84,7 @@ function getEmails(folderName, callback) {
 
         emails.on('message', function(message, id_sequence) {
             //console.log(" --> Message #" + id_sequence);
-            //var prefix = '     ';
+            var prefix = '     ';
 
 
 
@@ -95,8 +95,8 @@ function getEmails(folderName, callback) {
                 stream.on('data', function(chunk) {
                     count += chunk.length;
                     buffer += chunk.toString('utf8');
-                if (info.which === 'TEXT')
-                    console.log(prefix + 'Body [%s] (%d/%d)', inspect(info.which), count, info.size);
+                //if (info.which === 'TEXT')
+                    //console.log(prefix + 'Body [%s] (%d/%d)', inspect(info.which), count, info.size);
             });
 
               stream.once('end', function() {
@@ -104,7 +104,7 @@ function getEmails(folderName, callback) {
                   console.log(prefix + 'Parsed header: %s', inspect(Imap.parseHeader(buffer)));
                 else {
                   console.log(prefix + 'BODY TEXT: %s', buffer);
-                  console.log(prefix + 'Body [%s] Finished', inspect(info.which));
+                  //console.log(prefix + 'Body [%s] Finished', inspect(info.which));
                 }
               });
             });
@@ -112,7 +112,7 @@ function getEmails(folderName, callback) {
               console.log(prefix + 'Attributes: %s', inspect(attrs, false, 8));
             });
             message.once('end', function() {
-              console.log(prefix + 'Finished');
+              //console.log(prefix + 'Finished');
             });
           });
         }); 
