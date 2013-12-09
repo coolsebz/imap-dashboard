@@ -8,7 +8,7 @@ block content
     div.folders.block
       table.table.table-bordered
         thead
-          tr: th Folders
+          tr: th Folders 
         tbody
           each folder in user.folders
             tr
@@ -16,15 +16,21 @@ block content
                 //a(href='/emails/' + email.id) #{email.author} - #{email.title}
                 a(href='#') #{folder}
     div.emails.block
-      table.table.table-bordered
+      table.table.table-hover
         thead
-          tr: th Emails
+          tr: th Subject 
+              th From 
+              th Date
         tbody
           each email in user.emails
             tr            
               td 
                 //a(href='/emails/' + email.id) #{email.author} - #{email.title}
-                a(href='/email/' + email.id) email
+                a(href='/email/' + email.id) #{email.subject}
+              td
+                #{email.from}
+              td
+                #{email.date}
   else
     p.
       Please setup your details.json file in this directory in order to access the application
