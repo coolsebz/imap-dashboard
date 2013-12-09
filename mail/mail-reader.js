@@ -78,7 +78,7 @@ function getEmails(folderName, callback) {
     emailsInFolder = [];
 
     openFolder(folderName, function(folder) {
-        var emails = imap.seq.fetch('*:100', {
+        var emails = imap.seq.fetch('1:50', {
             bodies: ['HEADER.FIELDS (FROM TO SUBJECT DATE)', 'TEXT'],
             struct: true
         }); 
@@ -111,10 +111,11 @@ function getEmails(folderName, callback) {
                         var parsedHeader = Imap.parseHeader(buffer);
 
                         readEmail.id = id_sequence;
-                        readEmail.from = parsedHeader.from[0];
-                        readEmail.to = parsedHeader.to[0];
-                        readEmail.date = parsedHeader.undefineddate[0];
-                        readEmail.subject = parsedHeader.subject[0];
+                        //this should solve the weird headers
+                        readEmail.from = getNotEmpty(parsedHeader, "from", "undefinedfrom", "unidentified");
+                        readEmail.to = getNotEmpty(parsedHeader, "to", "undefinedto", "unidentified");
+                        readEmail.date = getNotEmpty(parsedHeader, "date", "undefineddate", "unidentified");
+                        readEmail.subject = getNotEmpty(parsedHeader, "subject", "undefinedsubject", "");
                         readEmail.hasHeaderReady = true;
                     }
 
@@ -134,8 +135,13 @@ function getEmails(folderName, callback) {
             });
             message.once('end', function() {
                 //console.log('Finished');
-                callback(emailsInFolder);
+                
             });
+        });
+        
+        emails.on('end', function() {
+            console.log("DONE");
+            callback(emailsInFolder);
         });
     });
 }
@@ -167,6 +173,22 @@ function openFolder(folderName, callback) {
             }
         });
     }
+}
+
+function getNotEmpty(object, fieldName, alternateFieldName, defaultValue) {
+    var valueToReturn;
+    if(typeof object[fieldName] === 'undefined') {
+        if(typeof object[alternateFieldName] !== 'undefined') {
+            valueToReturn = object[alternateFieldName][0];
+        }
+        else {
+            valueToReturn = defaultValue;
+        }
+    }
+    else {
+        valueToReturn = object[fieldName][0];
+    }           
+    return valueToReturn;
 }
 
 //only showing some of the methods
