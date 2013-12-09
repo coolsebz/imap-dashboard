@@ -4,7 +4,7 @@ var imap;
 
 var ready = false;
 var folders;
-var emails = [];
+var emailsInFolder = [];
 
 function setupClient(User, callback) {
 
@@ -79,33 +79,49 @@ function getEmails(folderName, callback) {
             struct: true
         }); 
 
-        if(typeof emails === 'undefined')
-            emails = [];
 
         emails.on('message', function(message, id_sequence) {
-            //console.log(" --> Message #" + id_sequence);
-            var prefix = '     ';
-
-
+            
+            var readEmail = {
+                from: "",
+                to: "",
+                date: "",
+                subject: "",
+                body: "",
+                hasHeaderReady: false,
+                hasBodyReady: false,
+            };
 
             message.on('body', function(stream, info) {
                 if (info.which === 'TEXT')
-                //console.log(prefix + 'Body [%s] found, %d total bytes', inspect(info.which), info.size);
+                
                 var buffer = '', count = 0;
                 stream.on('data', function(chunk) {
                     count += chunk.length;
                     buffer += chunk.toString('utf8');
-                //if (info.which === 'TEXT')
-                    //console.log(prefix + 'Body [%s] (%d/%d)', inspect(info.which), count, info.size);
+                
             });
 
               stream.once('end', function() {
-                if (info.which !== 'TEXT')
-                  console.log(prefix + 'Parsed header: %s', inspect(Imap.parseHeader(buffer)));
-                else {
-                  console.log(prefix + 'BODY TEXT: %s', buffer);
-                  //console.log(prefix + 'Body [%s] Finished', inspect(info.which));
+
+
+                if (info.which !== 'TEXT') {
+                    var parsedHeader = Imap.parseHeader(buffer);
+                    console.log(prefix + 'Parsed header: %s', inspect(Imap.parseHeader(buffer)));
+                    readEmail.from = parsedHeader.from[0];
+                    readEmail.to = parsedHeader.to[0];
+                    readEmail.date = parsedHeader.undefineddate[0];
+                    readEmail.subject = parsedHeader.subject[0];
+                    readEmail.hasHeaderReady = true;
                 }
+
+                else {
+                  readEmail.body = buffer;
+                  readEmail.hasBodyReady = true;
+                }
+
+                if(readEmail.hasBodyReady && readEmail.hasHeaderReady)
+                    emailsInFolder.push(readEmail);
               });
             });
             message.once('attributes', function(attrs) {
